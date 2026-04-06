@@ -25,5 +25,33 @@ class TestHTMLNode(unittest.TestCase):
         parent = HTMLNode("div", children=[child])
         self.assertEqual(parent.children[0], child)
 
+class TestLeafNode(unittest.TestCase):
+    def test_basic_tag(self):
+        node = LeafNode("p", "Hello")
+        self.assertEqual(node.to_html(), "<p>Hello</p>")
+
+    def test_no_tag(self):
+        node = LeafNode(None, "Hello")
+        self.assertEqual(node.to_html(), "Hello")
+
+    def test_with_props(self):
+        node = LeafNode("a", "Click", {"href": "https://boot.dev"})
+        self.assertEqual(node.to_html(), '<a href="https://boot.dev">Click</a>')
+
+    def test_multiple_props(self):
+        node = LeafNode("a", "Click", {"href": "https://boot.dev","target": "_blank"})
+        result = node.to_html()
+        self.assertIn('href="https://boot.dev"', result)
+        self.assertIn('target="_blank"', result)
+
+    def test_no_value_error(self):
+        node = LeafNode("p", None)
+        with self.assertRaises(ValueError):
+            node.to_html()
+
+    def test_repr(self):
+        node = LeafNode("p", "Hello", None)
+        self.assertEqual(repr(node), "LeafNode(p, Hello, None)")
+
 if __name__ == "__main__":
     unittest.main()
