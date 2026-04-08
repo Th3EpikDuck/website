@@ -70,3 +70,9 @@ def extract_markdown_links(text):
     pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
     return re.findall(pattern, text)
 
+def split_nodes_image(old_nodes):
+    pass
+
+def split_nodes_link(old_nodes):
+    pass
+
