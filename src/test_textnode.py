@@ -192,9 +192,9 @@ class TestTextNode(unittest.TestCase):
         )
         self.assertListEqual([("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
 
-    def test_extract_markdown_images(self):
+    def test_extract_markdown_links(self):
         matches = extract_markdown_links(
-            "This is text with a link to ![to youtube](https://www.youtube.com"
+            "This is text with a link to [to youtube](https://www.youtube.com)"
         )
         self.assertListEqual([("to youtube", "https://www.youtube.com")], matches)
 
