@@ -198,5 +198,68 @@ class TestTextNode(unittest.TestCase):
         )
         self.assertListEqual([("to youtube", "https://www.youtube.com")], matches)
 
+    def test_extract_markdown_images_multiple(self):
+        matches = extract_markdown_images(
+            "Here is ![first](https://a.com/1.png) and ![second](https://a.com/2.jpg)"
+        )
+        self.assertListEqual(
+            [
+                ("first", "https://a.com/1.png"),
+                ("second", "https://a.com/2.jpg"),
+            ],
+            matches,
+        )
+
+    def test_extract_markdown_images_none(self):
+        matches = extract_markdown_images(
+            "This text has no markdown images."
+        )
+        self.assertListEqual([], matches)
+    
+    def test_extract_markdown_images_empty_alt(self):
+        matches = extract_markdown_images(
+            "An image with no alt text: ![](https://a.com/blank.png)"
+        )
+        self.assertListEqual(
+            [("", "https://a.com/blank.png")],
+            matches,
+        )
+    
+    def test_extract_markdown_links_multiple(self):
+        matches = extract_markdown_links(
+            "Links: [Boot.dev](https://boot.dev) and [YouTube](https://youtube.com)"
+        )
+        self.assertListEqual(
+            [
+                ("Boot.dev", "https://boot.dev"),
+                ("YouTube", "https://youtube.com"),
+            ],
+            matches,
+        )
+    
+    def test_extract_markdown_links_none(self):
+        matches = extract_markdown_links(
+            "This text has no markdown links."
+        )
+        self.assertListEqual([], matches)
+    
+    def test_extract_markdown_links_ignores_images(self):
+        matches = extract_markdown_links(
+            "Here is an image ![logo](https://a.com/logo.png) and a link [site](https://a.com)"
+        )
+        self.assertListEqual(
+            [("site", "https://a.com")],
+            matches,
+        )
+    
+    def test_extract_markdown_links_empty_anchor(self):
+        matches = extract_markdown_links(
+            "Empty anchor: [](https://a.com)"
+        )
+        self.assertListEqual(
+            [("", "https://a.com")],
+            matches,
+        )
+
 if __name__ == "__main__":
     unittest.main()
