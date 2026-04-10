@@ -120,15 +120,7 @@ def split_nodes_link(old_nodes: List[Dict]) -> List[Dict]:
             new_nodes.append({"type": "text", "text": text[last_index:]})
 
 def text_to_textnodes(text):
-    """
-    Converts a raw string into a list of TextNode objects by processing 
-    inline markdown elements in a specific order.
-    """
-    # Start with a single node containing the full text
     nodes = [TextNode(text, TextType.TEXT)]
-    
-    # Process each delimiter/type sequentially
-    # The order generally doesn't matter for these splitters
     nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
     nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC)
     nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
