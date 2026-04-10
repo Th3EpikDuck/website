@@ -261,5 +261,127 @@ class TestTextNode(unittest.TestCase):
             matches,
         )
 
+    def test_split_nodes_image_basic(self):
+        nodes = [
+            {"type": "text", "text": "Here is an image ![alt](https://a.com/img.png)"}
+        ]
+    
+        result = split_nodes_image(nodes)
+    
+        self.assertEqual(
+            result,
+            [
+                {"type": "text", "text": "Here is an image "},
+                {"type": "image", "alt": "alt", "url": "https://a.com/img.png"},
+            ]
+        )
+    
+    
+    def test_split_nodes_image_multiple(self):
+        nodes = [
+            {"type": "text", "text": "![a](1.png) and ![b](2.png)"}
+        ]
+    
+        result = split_nodes_image(nodes)
+    
+        self.assertEqual(
+            result,
+            [
+                {"type": "image", "alt": "a", "url": "1.png"},
+                {"type": "text", "text": " and "},
+                {"type": "image", "alt": "b", "url": "2.png"},
+            ]
+        )
+    
+    
+    def test_split_nodes_image_no_image(self):
+        nodes = [
+            {"type": "text", "text": "just text"}
+        ]
+    
+        result = split_nodes_image(nodes)
+    
+        self.assertEqual(result, nodes)
+    
+    
+    def test_split_nodes_image_mixed_nodes(self):
+        nodes = [
+            {"type": "text", "text": "before ![alt](img.png) after"},
+            {"type": "image", "alt": "existing", "url": "x.png"},
+        ]
+    
+        result = split_nodes_image(nodes)
+    
+        self.assertEqual(
+            result,
+            [
+                {"type": "text", "text": "before "},
+                {"type": "image", "alt": "alt", "url": "img.png"},
+                {"type": "text", "text": " after"},
+                {"type": "image", "alt": "existing", "url": "x.png"},
+            ]
+        )
+
+    def test_split_nodes_link_basic(self):
+        nodes = [
+            {"type": "text", "text": "click [here](https://a.com)"}
+        ]
+    
+        result = split_nodes_link(nodes)
+    
+        self.assertEqual(
+            result,
+            [
+                {"type": "text", "text": "click "},
+                {"type": "link", "text": "here", "url": "https://a.com"},
+            ]
+        )
+    
+    
+    def test_split_nodes_link_multiple(self):
+        nodes = [
+            {"type": "text", "text": "[a](1.com) and [b](2.com)"}
+        ]
+    
+        result = split_nodes_link(nodes)
+    
+        self.assertEqual(
+            result,
+            [
+                {"type": "link", "text": "a", "url": "1.com"},
+                {"type": "text", "text": " and "},
+                {"type": "link", "text": "b", "url": "2.com"},
+            ]
+        )
+    
+    
+    def test_split_nodes_link_no_links(self):
+        nodes = [
+            {"type": "text", "text": "no links here"}
+        ]
+    
+        result = split_nodes_link(nodes)
+    
+        self.assertEqual(result, nodes)
+    
+    
+    def test_split_nodes_link_mixed_nodes(self):
+        nodes = [
+            {"type": "text", "text": "before [x](a.com) after"},
+            {"type": "link", "text": "existing", "url": "b.com"},
+        ]
+    
+        result = split_nodes_link(nodes)
+    
+        self.assertEqual(
+            result,
+            [
+                {"type": "text", "text": "before "},
+                {"type": "link", "text": "x", "url": "a.com"},
+                {"type": "text", "text": " after"},
+                {"type": "link", "text": "existing", "url": "b.com"},
+            ]
+        )
+
 if __name__ == "__main__":
     unittest.main()
