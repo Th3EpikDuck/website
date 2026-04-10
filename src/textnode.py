@@ -2,6 +2,7 @@ import re
 
 from enum import Enum
 from htmlnode import LeafNode
+from typing import List, Dict
 
 class TextType(Enum):
     TEXT = "text"
