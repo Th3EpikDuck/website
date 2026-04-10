@@ -1,6 +1,6 @@
 import unittest
 
-from textnode import TextNode, TextType, text_node_to_html_node, split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link
+from textnode import TextNode, TextType, text_node_to_html_node, split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes
 
 class TestTextNode(unittest.TestCase):
     def test_eq(self):
@@ -380,6 +380,52 @@ class TestTextNode(unittest.TestCase):
                 {"type": "link", "text": "x", "url": "a.com"},
                 {"type": "text", "text": " after"},
                 {"type": "link", "text": "existing", "url": "b.com"},
+            ]
+        )
+
+    def test_text_to_textnodes_plain(self):
+        result = text_to_textnodes("just text")
+    
+        self.assertEqual(
+            result,
+            [TextNode("just text", TextType.TEXT)]
+        )
+
+    def test_text_to_textnodes_bold(self):
+        result = text_to_textnodes("this is **bold** text")
+    
+        self.assertEqual(
+            result,
+            [
+                TextNode("this is ", TextType.TEXT),
+                TextNode("bold", TextType.BOLD),
+                TextNode(" text", TextType.TEXT),
+            ]
+        )
+    
+    
+    def test_text_to_textnodes_italic(self):
+        result = text_to_textnodes("this is _italic_ text")
+    
+        self.assertEqual(
+            result,
+            [
+                TextNode("this is ", TextType.TEXT),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" text", TextType.TEXT),
+            ]
+        )
+    
+    
+    def test_text_to_textnodes_code(self):
+        result = text_to_textnodes("this is `code` text")
+    
+        self.assertEqual(
+            result,
+            [
+                TextNode("this is ", TextType.TEXT),
+                TextNode("code", TextType.CODE),
+                TextNode(" text", TextType.TEXT),
             ]
         )
 
