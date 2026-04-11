@@ -12,6 +12,14 @@ class TextType(Enum):
     LINK = "link"
     IMAGE = "image"
 
+class BlockType(Enum):
+    PARAGRAPH = "paragraph"
+    HEADING = "heading"
+    CODE = "code"
+    QUOTE = "quote"
+    UNORDERED_LIST = "unordered_list"
+    ORDERED_LIST = "ordered_list"
+
 class TextNode:
     def __init__(self, text, text_type, url=None):
         self.text = text
@@ -26,6 +34,7 @@ class TextNode:
     def __repr__(self):
         return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
 
+# Stuff below (not connected to any class)
 def text_node_to_html_node(text_node):
     if text_node.text_type == TextType.TEXT:
         return LeafNode(None, text_node.text)
@@ -186,4 +195,42 @@ def markdown_to_blocks(markdown):
         if stripped != "":
             cleaned_blocks.append(stripped)
     return cleaned_blocks
+
+def block_to_block_type(block):
+    lines = block.split("\n")
+
+    # Heading
+    if block.startswith("#"):
+        count = 0
+        for char in block:
+            if char == "#":
+                count += 1
+            else:
+                break
+        if 1 <= count <= 6 and block[count] == " ":
+            return BlockType.HEADING
+
+    # Code block
+    if block.startswith("```") and block.endswith("```"):
+        return BlockType.CODE
+
+    # Quote
+    if all(line.startswith(">") for line in lines):
+        return BlockType.QUOTE
+
+    # Unordered list
+    if all(line.startswith("- ") for line in lines):
+        return BlockType.UNORDERED_LIST
+
+    # Ordered list
+    is_ordered = True
+    for i, line in enumerate(lines):
+        expected = f"{i+1}. "
+        if not line.startswith(expected):
+            is_ordered = False
+            break
+    if is_ordered:
+        return BlockType.ORDERED_LIST
+
+    return BlockType.PARAGRAPH
 
