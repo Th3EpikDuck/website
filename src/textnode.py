@@ -118,6 +118,7 @@ def split_nodes_link(old_nodes: List[Dict]) -> List[Dict]:
             
         if last_index < len(text):
             new_nodes.append({"type": "text", "text": text[last_index:]})
+    return new_nodes
 
 def text_to_textnodes(text):
     nodes = [TextNode(text, TextType.TEXT)]
