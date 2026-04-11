@@ -1,6 +1,7 @@
 import unittest
 
 from textnode import TextNode, TextType, text_node_to_html_node, split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes, markdown_to_blocks
+from textnode import BlockType, block_to_block_type
 
 class TestTextNode(unittest.TestCase):
     def test_eq(self):
@@ -463,6 +464,30 @@ class TestTextNode(unittest.TestCase):
         md = "Just a single block"
         result = markdown_to_blocks(md)
         self.assertEqual(result, ["Just a single block"])
+
+    def test_block_heading(self):
+        block = "# Heading"
+        self.assertEqual(block_to_block_type(block), BlockType.HEADING)
+    
+    def test_code_block(self):
+        block = "```\ncode here\n```"
+        self.assertEqual(block_to_block_type(block), BlockType.CODE)
+    
+    def test_block_quote(self):
+        block = "> line1\n> line2"
+        self.assertEqual(block_to_block_type(block), BlockType.QUOTE)
+    
+    def test_block_unordered_list(self):
+        block = "- item1\n- item2"
+        self.assertEqual(block_to_block_type(block), BlockType.UNORDERED_LIST)
+    
+    def test_block_ordered_list(self):
+        block = "1. item1\n2. item2"
+        self.assertEqual(block_to_block_type(block), BlockType.ORDERED_LIST)
+    
+    def test_block_paragraph(self):
+        block = "just a normal paragraph"
+        self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
 
 if __name__ == "__main__":
     unittest.main()
