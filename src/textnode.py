@@ -76,53 +76,95 @@ def split_nodes_image(old_nodes):
     image_pattern = re.compile(r'!\[([^\]]*)\]\(([^)]+)\)')
 
     for node in old_nodes:
-        if node.text_type != TextType.TEXT:
-            new_nodes.append(node)
-            continue
+        if isinstance(node, dict):
+            if node.get("type") != "text":
+                new_nodes.append(node)
+                continue
 
-        text = node.text
-        last_index = 0
+            text = node.get("text", "")
+            last_index = 0
 
-        for match in image_pattern.finditer(text):
-            start, end = match.span()
-            alt_text, url = match.groups()
+            for match in image_pattern.finditer(text):
+                start, end = match.span()
+                alt_text, url = match.groups()
 
-            if start > last_index:
-                new_nodes.append(TextNode(text[last_index:start], TextType.TEXT))
+                if start > last_index:
+                    new_nodes.append({"type": "text", "text": text[last_index:start]})
 
-            new_nodes.append(TextNode(alt_text, TextType.IMAGE, url))
-            last_index = end
+                new_nodes.append({"type": "image", "alt": alt_text, "url": url})
+                last_index = end
 
-        if last_index < len(text):
-            new_nodes.append(TextNode(text[last_index:], TextType.TEXT))
+            if last_index < len(text):
+                new_nodes.append({"type": "text", "text": text[last_index:]})
+        else:
+            if node.text_type != TextType.TEXT:
+                new_nodes.append(node)
+                continue
+
+            text = node.text
+            last_index = 0
+
+            for match in image_pattern.finditer(text):
+                start, end = match.span()
+                alt_text, url = match.groups()
+
+                if start > last_index:
+                    new_nodes.append(TextNode(text[last_index:start], TextType.TEXT))
+
+                new_nodes.append(TextNode(alt_text, TextType.IMAGE, url))
+                last_index = end
+
+            if last_index < len(text):
+                new_nodes.append(TextNode(text[last_index:], TextType.TEXT))
 
     return new_nodes
-
 
 def split_nodes_link(old_nodes):
     new_nodes = []
     link_pattern = re.compile(r'\[([^\]]+)\]\(([^)]+)\)')
 
     for node in old_nodes:
-        if node.text_type != TextType.TEXT:
-            new_nodes.append(node)
-            continue
+        if isinstance(node, dict):
+            if node.get("type") != "text":
+                new_nodes.append(node)
+                continue
 
-        text = node.text
-        last_index = 0
+            text = node.get("text", "")
+            last_index = 0
 
-        for match in link_pattern.finditer(text):
-            start, end = match.span()
-            link_text, url = match.groups()
+            for match in link_pattern.finditer(text):
+                start, end = match.span()
+                link_text, url = match.groups()
 
-            if start > last_index:
-                new_nodes.append(TextNode(text[last_index:start], TextType.TEXT))
+                if start > last_index:
+                    new_nodes.append({"type": "text", "text": text[last_index:start]})
 
-            new_nodes.append(TextNode(link_text, TextType.LINK, url))
-            last_index = end
+                new_nodes.append({"type": "link", "text": link_text, "url": url})
+                last_index = end
 
-        if last_index < len(text):
-            new_nodes.append(TextNode(text[last_index:], TextType.TEXT))
+            if last_index < len(text):
+                new_nodes.append({"type": "text", "text": text[last_index:]})
+
+        else:
+            if node.text_type != TextType.TEXT:
+                new_nodes.append(node)
+                continue
+
+            text = node.text
+            last_index = 0
+
+            for match in link_pattern.finditer(text):
+                start, end = match.span()
+                link_text, url = match.groups()
+
+                if start > last_index:
+                    new_nodes.append(TextNode(text[last_index:start], TextType.TEXT))
+
+                new_nodes.append(TextNode(link_text, TextType.LINK, url))
+                last_index = end
+
+            if last_index < len(text):
+                new_nodes.append(TextNode(text[last_index:], TextType.TEXT))
 
     return new_nodes
 
@@ -134,5 +176,5 @@ def text_to_textnodes(text):
     nodes = split_nodes_image(nodes)
     nodes = split_nodes_link(nodes)
     
-    return noded
+    return nodes
 
