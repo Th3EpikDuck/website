@@ -1,6 +1,6 @@
 import unittest
 
-from textnode import TextNode, TextType, text_node_to_html_node, split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes
+from textnode import TextNode, TextType, text_node_to_html_node, split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes, markdown_to_blocks
 
 class TestTextNode(unittest.TestCase):
     def test_eq(self):
@@ -428,6 +428,41 @@ class TestTextNode(unittest.TestCase):
                 TextNode(" text", TextType.TEXT),
             ]
         )
+
+    def test_basic_split(self):
+        md = "# Heading\n\nParagraph text\n\n- item 1\n- item 2"
+        result = markdown_to_blocks(md)
+        self.assertEqual(result, [
+            "# Heading",
+            "Paragraph text",
+            "- item 1\n- item 2"
+        ])
+
+    def test_strips_whitespace(self):
+        md = "   # Heading   \n\n   Paragraph   "
+        result = markdown_to_blocks(md)
+        self.assertEqual(result, [
+            "# Heading",
+            "Paragraph"
+        ])
+
+    def test_extra_newlines_removed(self):
+        md = "# Heading\n\n\n\nParagraph"
+        result = markdown_to_blocks(md)
+        self.assertEqual(result, [
+            "# Heading",
+            "Paragraph"
+        ])
+
+    def test_only_newlines(self):
+        md = "\n\n\n"
+        result = markdown_to_blocks(md)
+        self.assertEqual(result, [])
+
+    def test_single_block(self):
+        md = "Just a single block"
+        result = markdown_to_blocks(md)
+        self.assertEqual(result, ["Just a single block"])
 
 if __name__ == "__main__":
     unittest.main()
