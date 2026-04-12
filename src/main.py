@@ -21,12 +21,15 @@ def copyStaticToPublic(source, destination):
     def copy_recursive(current_source, current_destination):
         if not os.path.exists(current_destination):
             print("Fuck how??? This runs after the deletion. My computer on lsd and amphentamine again")
+            print("This drugged computer can still retify the issue lol")
+            os.makedirs(current_destination)
 
         for item in os.listdir(current_source):
             s = os.path.join(current_source, item)
             d = os.path.join(current_destination, item)
 
             if os.path.isdir(s):
+                os.makedirs(d, exist_ok=True)
                 copy_recursive(s, d)
             else:
                 print(f"Copying: {s} -> {d}")
