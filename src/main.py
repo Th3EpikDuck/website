@@ -1,7 +1,8 @@
 import os
 import shutil
 
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, markdown_to_html_node
+from htmlnode import HTMLNode
 
 def copyStaticToPublic(source, destination):
     # Deletes ALL files in the destination if it exists (pray it does exist)
@@ -59,10 +60,26 @@ def generate_path(from_path, template_path, destination_path):
     with open(template_path, 'r', encoding='utf-8') as f:
         template_content = f.read()
 
+    html_node = markdown_to_html_node(markdown_content)
+    content_html = html_node.to_html()
+
+    title = extract_title(markdown_content)
+
+    final_html = template_content.replace("{{ Title }}", title)
+    final_html = final_html.replace("{{ Content }}", content_html)
+
+    dest_dir = os.path.dirname(dest_path)
+    if dest_dir:
+        os.makedirs(dest_dir, exist_ok=True)
+    
+    with open(dest_path, 'w', encoding='utf-8') as f:
+        f.write(final_html)
+
 # Main
 def main():
     print("hello world")
     node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
     print(node)
     copyStaticToPublic("static", "public")
+    generate_path("ocntent/index.md", "template.html", "public/index.html")
 main()
