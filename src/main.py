@@ -6,7 +6,7 @@ from textnode import TextNode, TextType
 def copyStaticToPublic(source, destination):
     # Deletes ALL files in the destination if it exists (pray it does exist)
     if os.path.exists(destination):
-        print(f"Cleaning all the files in {destination} rn"
+        print(f"Cleaning all the files in {destination} rn")
         for item in os.listdir(destination):
             item_path = os.path.join(destination, item)
             if os.path.isfile(item_path) or os.path.islink(item_path):
@@ -39,5 +39,5 @@ def main():
     print("hello world")
     node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
     print(node)
-    copyStaticToPublic(static/, public/)
+    copyStaticToPublic("static", "public")
 main()
