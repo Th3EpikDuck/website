@@ -47,6 +47,18 @@ def extract_title(markdown):
 
     raise Exception("Unfortunately, the h1 header has either disappeared or it never existed... probably the second one")
 
+def generate_path(from_path, template_path, destination_path):
+    print(f"Generating a path from {from_path} to the damn {destination_path} via the damn {template_path}")
+    
+    if not os.path.exists(from_path):
+        raise FileNotFoundError(f"Markdown file has either disappeared or been forsaken: {from_path}")
+    with open(from_path, 'r', encoding='utf-8') as f:
+        markdown_content = f.read()
+    if not os.path.exists(template_path):
+        raise FileNotFoundError(f"Template file has either disappeared or been forsaken: {template_path}")
+    with open(template_path, 'r', encoding='utf-8') as f:
+        template_content = f.read()
+
 # Main
 def main():
     print("hello world")
