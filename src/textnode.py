@@ -216,11 +216,11 @@ def block_to_block_type(block):
             return BlockType.HEADING
 
     # Code block
-    if block.startswith("```") and block.endswith("```"):
+    if block.startswith("```\n") and block.endswith("\n```"):
         return BlockType.CODE
 
     # Quote
-    if all(line.startswith(">") for line in lines):
+    if all(line.startswith(">") for line in lines if line):
         return BlockType.QUOTE
 
     # Unordered list
@@ -257,7 +257,7 @@ def markdown_to_html_node(markdown):
             block_nodes.append(ParentNode(f"h{level}", text_to_children(content)))
             
         elif block_type == BlockType.CODE:
-            content = block.strip("```").strip()
+            content = block[3:-3].strip()
             code_node = text_node_to_html_node(TextNode(content, TextType.TEXT))
             block_nodes.append(ParentNode("pre", [ParentNode("code", [code_node])]))
             
@@ -269,14 +269,14 @@ def markdown_to_html_node(markdown):
         elif block_type == BlockType.UNORDERED_LIST:
             items = []
             for line in block.split("\n"):
-                content = line[2:] # Remove "- "
+                content = line[2:]
                 items.append(ParentNode("li", text_to_children(content)))
             block_nodes.append(ParentNode("ul", items))
             
         elif block_type == BlockType.ORDERED_LIST:
             items = []
             for line in block.split("\n"):
-                content = line[line.find(". ") + 2:] # Remove "1. "
+                content = line[line.find(". ") + 2:]
                 items.append(ParentNode("li", text_to_children(content)))
             block_nodes.append(ParentNode("ol", items))
 
