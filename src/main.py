@@ -83,5 +83,5 @@ def main():
     node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
     print(node)
     copyStaticToPublic("static", "public")
-    generate_path("content/index.md", "template.html", "public/index.html")
+    generate_path("content/index.md", "src/template.html", "public/index.html")
 main()
