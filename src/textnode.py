@@ -263,7 +263,11 @@ def markdown_to_html_node(markdown):
                 content = content[1:]
             if content.endswith("\n"):
                 content = content[:-1]
+            lines = content.split("\n")
+            stripped_lines = [line.lstrip() for line in lines]
+            content = "\n".join(stripped_lines)
             content = content + "\n"
+        
             code_node = text_node_to_html_node(TextNode(content, TextType.TEXT))
             block_nodes.append(ParentNode("pre", [ParentNode("code", [code_node])]))
             
