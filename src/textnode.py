@@ -36,6 +36,10 @@ class TextNode:
         return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
 
 # Stuff below (not connected to any class)
+def text_to_children(text):
+    nodes = text_to_textnodes(text)
+    return [text_node_to_html_node(node) for node in nodes]
+    
 def text_node_to_html_node(text_node):
     if text_node.text_type == TextType.TEXT:
         return LeafNode(None, text_node.text)
