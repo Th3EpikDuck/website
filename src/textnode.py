@@ -216,7 +216,7 @@ def block_to_block_type(block):
             return BlockType.HEADING
 
     # Code block
-    if block.startswith("```\n") and block.endswith("\n```"):
+    if block.startswith("```") and block.endswith("```"):
         return BlockType.CODE
 
     # Quote
@@ -246,7 +246,8 @@ def markdown_to_html_node(markdown):
         block_type = block_to_block_type(block)
         
         if block_type == BlockType.PARAGRAPH:
-            block_nodes.append(ParentNode("p", text_to_children(block)))
+            content = " ".join(line.strip() for line in block.split("\n"))
+            block_nodes.append(ParentNode("p", text_to_children(content)))
             
         elif block_type == BlockType.HEADING:
             level = 0
