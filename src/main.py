@@ -74,7 +74,7 @@ def generate_path(from_path, template_path, destination_path):
     if dest_dir:
         os.makedirs(dest_dir, exist_ok=True)
     
-    with open(dest_path, 'w', encoding='utf-8') as f:
+    with open(destination_path, 'w', encoding='utf-8') as f:
         f.write(final_html)
 
 # Main
