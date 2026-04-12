@@ -37,6 +37,16 @@ def copyStaticToPublic(source, destination):
 
     copy_recursive(source, destination)
 
+def extract_title(markdown):
+    lines = markdown.split("\n")
+
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("# "):
+            return stripped[2:].strip()
+
+    raise Exception("Unfortunately, the h1 header has either disappeared or it never existed... probably the second one")
+
 # Main
 def main():
     print("hello world")
