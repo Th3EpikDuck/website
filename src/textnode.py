@@ -234,3 +234,46 @@ def block_to_block_type(block):
 
     return BlockType.PARAGRAPH
 
+def markdown_to_html_node(markdown):
+    blocks = markdown_to_blocks(markdown)
+    block_nodes = []
+    for block in blocks:
+        block_type = block_to_block_type(block)
+        
+        if block_type == BlockType.PARAGRAPH:
+            block_nodes.append(ParentNode("p", text_to_children(block)))
+            
+        elif block_type == BlockType.HEADING:
+            level = 0
+            for char in block:
+                if char == "#": level += 1
+                else: break
+            content = block[level + 1:]
+            block_nodes.append(ParentNode(f"h{level}", text_to_children(content)))
+            
+        elif block_type == BlockType.CODE:
+            content = block.strip("```").strip()
+            code_node = text_node_to_html_node(TextNode(content, TextType.TEXT))
+            block_nodes.append(ParentNode("pre", [ParentNode("code", [code_node])]))
+            
+        elif block_type == BlockType.QUOTE:
+            lines = block.split("\n")
+            content = " ".join([line.lstrip("> ").strip() for line in lines])
+            block_nodes.append(ParentNode("blockquote", text_to_children(content)))
+            
+        elif block_type == BlockType.UNORDERED_LIST:
+            items = []
+            for line in block.split("\n"):
+                content = line[2:] # Remove "- "
+                items.append(ParentNode("li", text_to_children(content)))
+            block_nodes.append(ParentNode("ul", items))
+            
+        elif block_type == BlockType.ORDERED_LIST:
+            items = []
+            for line in block.split("\n"):
+                content = line[line.find(". ") + 2:] # Remove "1. "
+                items.append(ParentNode("li", text_to_children(content)))
+            block_nodes.append(ParentNode("ol", items))
+
+    return ParentNode("div", block_nodes)
+
