@@ -3,11 +3,6 @@ import shutil
 
 from textnode import TextNode, TextType
 
-def main():
-    print("hello world")
-    node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
-    print(node)
-
 def copyStaticToPublic(source, destination):
     # Deletes ALL files in the destination if it exists (pray it does exist)
     if os.path.exists(destination):
@@ -38,5 +33,11 @@ def copyStaticToPublic(source, destination):
                 shutil.copy2(s, d)
 
     copy_recursive(source, destination)
-    
+
+# Main
+def main():
+    print("hello world")
+    node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
+    print(node)
+    copyStaticToPublic(static/, public/)
 main()
