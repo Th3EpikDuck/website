@@ -193,7 +193,7 @@ def text_to_textnodes(text):
     return nodes
 
 def markdown_to_blocks(markdown):
-    blocks = markdown.split("\n\n")
+    blocks = re.split(r"\n\s*\n", markdown)
     cleaned_blocks = []
     for block in blocks:
         stripped = block.strip()
@@ -258,7 +258,12 @@ def markdown_to_html_node(markdown):
             block_nodes.append(ParentNode(f"h{level}", text_to_children(content)))
             
         elif block_type == BlockType.CODE:
-            content = block[3:-3].strip()
+            content = block[3:-3]
+            if content.startswith("\n"):
+                content = content[1:]
+            if content.endswith("\n"):
+                content = content[:-1]
+            content = content + "\n"
             code_node = text_node_to_html_node(TextNode(content, TextType.TEXT))
             block_nodes.append(ParentNode("pre", [ParentNode("code", [code_node])]))
             
