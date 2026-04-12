@@ -17,6 +17,8 @@ def copyStaticToPublic(source, destination):
     else:
         print("Could be an error but idk")
         print("Wait i forgot, it is an error please forsake me i hate my life")
+        print("Nevermind, take this simple os and leave me alone")
+        os.makedirs(destination, exist_ok=True)
 
     # Copies ALl files in the source to the destination
     def copy_recursive(current_source, current_destination):
@@ -68,7 +70,7 @@ def generate_path(from_path, template_path, destination_path):
     final_html = template_content.replace("{{ Title }}", title)
     final_html = final_html.replace("{{ Content }}", content_html)
 
-    dest_dir = os.path.dirname(dest_path)
+    dest_dir = os.path.dirname(destination_path)
     if dest_dir:
         os.makedirs(dest_dir, exist_ok=True)
     
@@ -81,5 +83,5 @@ def main():
     node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
     print(node)
     copyStaticToPublic("static", "public")
-    generate_path("ocntent/index.md", "template.html", "public/index.html")
+    generate_path("content/index.md", "template.html", "public/index.html")
 main()
