@@ -52,7 +52,7 @@ def extract_title(markdown):
 
     raise Exception("Unfortunately, the h1 header has either disappeared or it never existed... probably the second one")
 
-def generate_page(from_path, template_path, destination_path):
+def generate_page(from_path, template_path, destination_path, basepath):
     print(f"Generating a path from {from_path} to the damn {destination_path} via the damn {template_path}")
     
     if not os.path.exists(from_path):
@@ -69,8 +69,8 @@ def generate_page(from_path, template_path, destination_path):
 
     title = extract_title(markdown_content)
 
-    final_html = template_content.replace("{{ Title }}", title)
-    final_html = final_html.replace("{{ Content }}", content_html)
+    final_html = final_html.replace('href="/', f'href="{basepath}')
+    final_html = final_html.replace('src="/', f'src="{basepath}')
 
     dest_dir = os.path.dirname(destination_path)
     if dest_dir:
@@ -79,19 +79,19 @@ def generate_page(from_path, template_path, destination_path):
     with open(destination_path, 'w', encoding='utf-8') as f:
         f.write(final_html)
 
-def generate_pages_recursive(content_dir, template_path, dest_dir):
+def generate_pages_recursive(content_dir, template_path, dest_dir, basepath):
     for entry in os.listdir(content_dir):
         entry_path = os.path.join(content_dir, entry)
         dest_path = os.path.join(dest_dir, entry)
 
         if os.path.isdir(entry_path):
             os.makedirs(dest_path, exist_ok=True)
-            generate_pages_recursive(entry_path, template_path, dest_path)
+            generate_pages_recursive(entry_path, template_path, dest_path, basepath)
 
         elif os.path.isfile(entry_path) and entry_path.endswith(".md"):
             html_dest = Path(dest_path).with_suffix(".html")
             print(f"Generating {html_dest} from {entry_path}")
-            generate_page(entry_path, template_path, html_dest)
+            generate_page(entry_path, template_path, html_dest, basepath)
 
 # Main
 def main():
@@ -100,5 +100,5 @@ def main():
         basepath = sys.argv[1]
         
     copyStaticToPublic("static", "public")
-    generate_pages_recursive("content", "src/template.html", "public")
+    generate_pages_recursive("content", "src/template.html", "public", basepath)
 main()
