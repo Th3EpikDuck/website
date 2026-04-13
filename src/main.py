@@ -50,7 +50,7 @@ def extract_title(markdown):
 
     raise Exception("Unfortunately, the h1 header has either disappeared or it never existed... probably the second one")
 
-def generate_path(from_path, template_path, destination_path):
+def generate_page(from_path, template_path, destination_path):
     print(f"Generating a path from {from_path} to the damn {destination_path} via the damn {template_path}")
     
     if not os.path.exists(from_path):
@@ -77,19 +77,19 @@ def generate_path(from_path, template_path, destination_path):
     with open(destination_path, 'w', encoding='utf-8') as f:
         f.write(final_html)
 
-def generate_pages_recursive(directory_path_content, template_path, destination_dir_path):
-    for entry in os.listdir(directory_path_content):
-        entry_path = os.path.join(directory_path_content, entry)
-        dest_path = os.path.join(destination_dir_path, entry)
+def generate_pages_recursive(content_dir, template_path, dest_dir):
+    for entry in os.listdir(content_dir):
+        entry_path = os.path.join(content_dir, entry)
+        dest_path = os.path.join(dest_dir, entry)
 
-        if os.path.isfile(entry_path):
-            if entry_path.endswith(".md"):e
-                html_destination_path = Path(dest_path).with_suffix(".html")
-                print(f"Generating {html_destination_path} from {entry_path}...")
-                generate_page(entry_path, template_path, html_destination_path)
-        elif os.path.isdir(entry_path):
-            os.makedirs(destination_path, exist_ok=True)
-            generate_pages_recursive(entry_path, template_path, destination_path)
+        if os.path.isdir(entry_path):
+            os.makedirs(dest_path, exist_ok=True)
+            generate_pages_recursive(entry_path, template_path, dest_path)
+
+        elif os.path.isfile(entry_path) and entry_path.endswith(".md"):
+            html_dest = Path(dest_path).with_suffix(".html")
+            print(f"Generating {html_dest} from {entry_path}")
+            generate_path(entry_path, template_path, html_dest)
 
 # Main
 def main():
@@ -97,5 +97,5 @@ def main():
     node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
     print(node)
     copyStaticToPublic("static", "public")
-    generate_path("content/index.md", "src/template.html", "public/index.html")
+    generate_pages_recursive("content/index.md", "src/template.html", "public/index.html")
 main()
