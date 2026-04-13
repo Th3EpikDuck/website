@@ -99,6 +99,6 @@ def main():
     if len(sys.argv) > 1:
         basepath = sys.argv[1]
         
-    copyStaticToPublic("static", "public")
-    generate_pages_recursive("content", "src/template.html", "public", basepath)
+    #copyStaticToPublic("static", "public")
+    generate_pages_recursive("content", "src/template.html", "doc", basepath)
 main()
