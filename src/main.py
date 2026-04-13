@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 
 from textnode import TextNode, TextType, markdown_to_html_node
 from htmlnode import HTMLNode
@@ -36,7 +37,7 @@ def copyStaticToPublic(source, destination):
                 os.makedirs(d, exist_ok=True)
                 copy_recursive(s, d)
             else:
-                print(f"Copying: {s} -> {d}")
+                print(f"Copying rn: {s} -> {d}")
                 shutil.copy2(s, d)
 
     copy_recursive(source, destination)
@@ -94,9 +95,10 @@ def generate_pages_recursive(content_dir, template_path, dest_dir):
 
 # Main
 def main():
-    print("hello world")
-    node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
-    print(node)
+    basepath = "/"
+    if len(sys.argv) > 1:
+        basepath = sys.argv[1]
+        
     copyStaticToPublic("static", "public")
     generate_pages_recursive("content", "src/template.html", "public")
 main()
