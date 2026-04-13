@@ -89,7 +89,7 @@ def generate_pages_recursive(content_dir, template_path, dest_dir):
         elif os.path.isfile(entry_path) and entry_path.endswith(".md"):
             html_dest = Path(dest_path).with_suffix(".html")
             print(f"Generating {html_dest} from {entry_path}")
-            generate_path(entry_path, template_path, html_dest)
+            generate_page(entry_path, template_path, html_dest)
 
 # Main
 def main():
@@ -97,5 +97,5 @@ def main():
     node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
     print(node)
     copyStaticToPublic("static", "public")
-    generate_pages_recursive("content/index.md", "src/template.html", "public/index.html")
+    generate_pages_recursive("content", "template.html", "public")
 main()
