@@ -98,5 +98,5 @@ def main():
     node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
     print(node)
     copyStaticToPublic("static", "public")
-    generate_pages_recursive("content", "template.html", "public")
+    generate_pages_recursive("content", "src/template.html", "public")
 main()
