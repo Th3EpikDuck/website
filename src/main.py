@@ -3,6 +3,7 @@ import shutil
 
 from textnode import TextNode, TextType, markdown_to_html_node
 from htmlnode import HTMLNode
+from pathlib import Path
 
 def copyStaticToPublic(source, destination):
     # Deletes ALL files in the destination if it exists (pray it does exist)
