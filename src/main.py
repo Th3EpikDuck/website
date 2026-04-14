@@ -69,6 +69,9 @@ def generate_page(from_path, template_path, destination_path, basepath):
 
     title = extract_title(markdown_content)
 
+    final_html = template_content.replace("{{ Title }}", title)
+    final_html = final_html.replace("{{ Content }}", content_html)
+    
     final_html = final_html.replace('href="/', f'href="{basepath}')
     final_html = final_html.replace('src="/', f'src="{basepath}')
 
@@ -100,5 +103,5 @@ def main():
         basepath = sys.argv[1]
         
     #copyStaticToPublic("static", "public")
-    generate_pages_recursive("content", "src/template.html", "doc", basepath)
+    generate_pages_recursive("content", "src/template.html", "docs", basepath)
 main()
